@@ -2,8 +2,8 @@
   <v-container fill-height fluid grid-list-xl>
     <v-layout justify-center wrap>
       <v-flex md12>
-        <v-btn color="green white--text" to="member/add">Add a member</v-btn>
-        <material-card text>
+        <v-btn color="blue white--text" to="member/add">Add a member</v-btn>
+        <v-card text flat>
           <v-card-title>
             <v-text-field
               v-model="search"
@@ -36,7 +36,8 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.phone }}</td>
                     <td>{{ item.birthdate }}</td>
-                    <td class="text-xs-right">{{ item.role }}</td>
+                    <td>{{ item.ProjectName }}</td>
+                    <!-- <td class="text-xs-right">{{ item.role }}</td> -->
                     <td class="text-xs-right">
                       <!-- <v-btn color="success" @click="dialog=true">Chỉnh sửa</v-btn> -->
                       <v-dialog v-model="item.dialog" width="700">
@@ -45,7 +46,7 @@
                           <v-icon color="tertiary" v-on="on">edit</v-icon>
                         </template>
                         <edit-form
-                          title="Chỉnh sửa thông tin admin"
+                          title="Chỉnh sửa thông tin member"
                           :fullName="item.fullName"
                           :phoneNumber="item.phoneNumber"
                           :email="item.email"
@@ -66,7 +67,7 @@
             </v-data-table>
             <v-pagination v-model="page" :length="pageCount"></v-pagination>
           </div>
-        </material-card>
+        </v-card>
       </v-flex>
     </v-layout>
   </v-container>
@@ -75,55 +76,66 @@
 
 <script>
 export default {
-  data() {
-    return {
-        page: 1,
+  data: () => ({
+    page: 1,
     pageCount: 0,
     itemsPerPage: 5,
+    dialog: false,
+    btnLock: true,
     search: "",
-     headers: [
-        {
-          text: 'Name',
-          value: 'name',
-        },
-        {
-          text: 'Phone',
-          value: 'phone',
-        },
-        {
-          text: 'Birthdate',
-          value: 'birthdate',
-        }
-      ],
-      items: [
-        {
-          name: 'Dat 1',
-          phone: '0343244644',
-          birthdate: '30/01/1998'
-        },
-        {
-          name: 'Dat 2',
-          phone: '0343244644',
-          birthdate: '20/01/1998'
-        },
-        {
-           name: 'Dat 3',
-          phone: '0343244644',
-          birthdate: '10/01/1998'
-        },
-        {
-           name: 'Dat 4',
-          phone: '0343244644',
-          birthdate: '11/01/1998'
-        },
-        {
-          name: 'Dat 5',
-          phone: '0343244644',
-          birthdate: '25/01/1998'
-        }
-      ],
-    };
+    headers: [
+      {
+        text: "Namme",
+        value: "name"
+      },
+     {
+        text: "Phone",
+        value: "phone"
+      },
+      {
+        text: "Birthdate",
+        value: "birthdate"
+      },
+      {
+        text: "Project name",
+        value: "ProjectName"
+      }
+    ],
+
+    items: [],
+    ChoosenItems:[]
+  }),
+  methods: {
+    clickItem: function(id) {
+      this.$router.push({ path: "/member/edit/" + id });
+    },
+    
+   async getListMembers(){
+     let $this=this
+      await $this.$axios.get("/member")
+        .then(async function(response) {
+          //if(response.data.returnCode == 1){
+         // console.log("this members: " +  JSON.stringify(response.data.data))
+          await ($this.items = response.data);
+          $this.items.forEach(element => {
+            element.birthdate = element.birthdate.substring(0, 10);
+          });
+           console.log("this members: " +  JSON.stringify($this.items))
+         
+          // }
+          // else{
+          //   console.log("this error message: " +  response.data.returnMessage)
+          // }
+        })
+        .catch(function(error) {
+          console.log("Error get list member:");
+          console.log(error);
+        });
+    }
   },
- 
+  created: async function() {
+    this.getListMembers()
+    //console.log()
+  }
 };
 </script>
