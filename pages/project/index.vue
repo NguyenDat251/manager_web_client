@@ -36,13 +36,40 @@
                     <td>{{ item.name }}</td>
                     <td>{{ item.description }}</td>
                     <td>
-                      <v-icon color="tertiary" @click="showMembers(item)">mdi-view-list</v-icon>
+                      <v-dialog ref="dialog" v-model="item.dialog" width="290px">
+                        <template v-slot:activator="{ on }">
+                          <v-tooltip right v-on="on">
+                            <template v-slot:activator="{ on }">
+                              <v-icon
+                                color="tertiary"
+                                @click="showMembers(item)"
+                                v-on="on"
+                              >mdi-view-list</v-icon>
+                            </template>
+                            <span class="white--text">Show list members</span>
+                          </v-tooltip>
+                        </template>
+                        <v-data-table :headers="MemberHeaders" :items="members"></v-data-table>
+                      </v-dialog>
                     </td>
                     <td class="text-xs-right">
-                      <v-icon color="tertiary" @click="edit(item)">edit</v-icon>
+                      <v-tooltip right v-on="on">
+                        <template v-slot:activator="{ on }">
+                          <v-icon color="tertiary" @click="edit(item)" v-on="on">edit</v-icon>
+                        </template>
+                        <span class="white--text">Edit project</span>
+                      </v-tooltip>
                     </td>
                     <td>
-                      <v-icon color="tertiary" @click="deleteMember(item)">mdi-delete</v-icon>
+                      
+                      <v-tooltip right v-on="on">
+                        <template v-slot:activator="{ on }">
+                          <v-icon color="tertiary" @click="deleteProject(item)" v-on="on">mdi-delete</v-icon>
+                        </template>
+                        <span class="white--text">Delete project</span>
+                      </v-tooltip>
+
+                      
                     </td>
                   </tr>
                 </tbody>
@@ -60,6 +87,7 @@
 <script>
 export default {
   data: () => ({
+    //modal: false,
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
@@ -77,7 +105,19 @@ export default {
       }
     ],
 
-    items: []
+    items: [],
+
+    MemberHeaders: [
+      {
+        text: "Name",
+        value: "name"
+      },
+      {
+        text: "Phone",
+        value: "phone"
+      }
+    ],
+    members: []
   }),
   methods: {
     clickItem: function(id) {
@@ -92,12 +132,12 @@ export default {
           //if(response.data.returnCode == 1){
           // console.log("this members: " +  JSON.stringify(response.data.data))
           await ($this.items = response.data);
-          console.log("this project: " + JSON.stringify($this.items));
 
-          // }
-          // else{
-          //   console.log("this error message: " +  response.data.returnMessage)
-          // }
+          $this.items.forEach(Element => {
+            Element["dialog"] = false;
+          });
+
+          console.log("this project: " + JSON.stringify($this.items));
         })
         .catch(function(error) {
           console.log("Error get list project:");
@@ -107,7 +147,7 @@ export default {
     edit(project) {
       this.$router.push({ path: "/project/edit/" + project.id });
     },
-    deleteMember(project) {
+    deleteProject(project) {
       let $this = this;
       this.$axios
         .delete("/project/" + project.id)
@@ -120,6 +160,24 @@ export default {
         })
         .catch(function(error) {
           console.log("Error delete project:");
+          console.log(error);
+        });
+    },
+    async showMembers(item) {
+      item.dialog = true;
+      let $this = this;
+      await $this.$axios
+        .get("/project/members/" + item.id)
+        .then(async function(response) {
+          //if(response.data.returnCode == 1){
+          // console.log("this members: " +  JSON.stringify(response.data.data))
+          await ($this.members = response.data);
+          console.log(
+            "this members of project: " + JSON.stringify($this.members)
+          );
+        })
+        .catch(function(error) {
+          console.log("Error get list members of project:");
           console.log(error);
         });
     }

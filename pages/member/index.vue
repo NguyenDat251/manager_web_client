@@ -39,29 +39,20 @@
                     <td>{{ item.ProjectName }}</td>
                     <!-- <td class="text-xs-right">{{ item.role }}</td> -->
                     <td class="text-xs-right">
-
-                      <v-icon color="tertiary" @click="edit(item)">edit</v-icon>
-                      <!-- <v-btn color="success" @click="dialog=true">Chỉnh sửa</v-btn> -->
-                      <!-- <v-dialog v-model="item.dialog" width="700">
+                      <v-tooltip right v-on="on">
                         <template v-slot:activator="{ on }">
-                           <v-btn color="success" v-on="on">Chỉnh sửa</v-btn>
-                          
+                          <v-icon color="tertiary" @click="edit(item)" v-on="on">edit</v-icon>
                         </template>
-                        <edit-form
-                          title="Chỉnh sửa thông tin member"
-                          :fullName="item.fullName"
-                          :phoneNumber="item.phoneNumber"
-                          :email="item.email"
-                          btn="Cập nhập"
-                          @OnClickEdit="updateProfile($event, item)"
-                        ></edit-form>
-                      </v-dialog> -->
+                        <span class="white--text">Edit member</span>
+                      </v-tooltip>
                     </td>
                     <td>
-                      <v-icon
-                        color="tertiary"
-                        @click="deleteMember(item)"
-                      >mdi-account-remove</v-icon>
+                      <v-tooltip right v-on="on">
+                        <template v-slot:activator="{ on }">
+                          <v-icon color="tertiary" @click="deleteMember(item)" v-on="on">mdi-account-remove</v-icon>
+                        </template>
+                        <span class="white--text">Delete member</span>
+                      </v-tooltip>
                     </td>
                   </tr>
                 </tbody>
@@ -90,7 +81,7 @@ export default {
         text: "Namme",
         value: "name"
       },
-     {
+      {
         text: "Phone",
         value: "phone"
       },
@@ -105,25 +96,26 @@ export default {
     ],
 
     items: [],
-    ChoosenItems:[]
+    ChoosenItems: []
   }),
   methods: {
     clickItem: function(id) {
       this.$router.push({ path: "/member/edit/" + id });
     },
-    
-   async getListMembers(){
-     let $this=this
-      await $this.$axios.get("/member")
+
+    async getListMembers() {
+      let $this = this;
+      await $this.$axios
+        .get("/member")
         .then(async function(response) {
           //if(response.data.returnCode == 1){
-         // console.log("this members: " +  JSON.stringify(response.data.data))
+          // console.log("this members: " +  JSON.stringify(response.data.data))
           await ($this.items = response.data);
           $this.items.forEach(element => {
             element.birthdate = element.birthdate.substring(0, 10);
           });
-           console.log("this members: " +  JSON.stringify($this.items))
-         
+          console.log("this members: " + JSON.stringify($this.items));
+
           // }
           // else{
           //   console.log("this error message: " +  response.data.returnMessage)
@@ -134,16 +126,16 @@ export default {
           console.log(error);
         });
     },
-    edit(member){
-      this.$router.push({path: "/member/edit/" + member.id})
+    edit(member) {
+      this.$router.push({ path: "/member/edit/" + member.id });
     },
-    deleteMember(member){
-       let $this= this;
-      this.$axios.delete("/member/" + member.id)
+    deleteMember(member) {
+      let $this = this;
+      this.$axios
+        .delete("/member/" + member.id)
         .then(async function(response) {
-         
-          console.log(response.data)
-          console.log($this.items)
+          console.log(response.data);
+          console.log($this.items);
           const index = $this.items.indexOf(member);
           console.log("index delete item: " + index);
           $this.items.splice(index, 1);
@@ -155,7 +147,7 @@ export default {
     }
   },
   created: async function() {
-    this.getListMembers()
+    this.getListMembers();
     //console.log()
   }
 };
