@@ -4,6 +4,8 @@
 
 ## Build Setup
 
+Create file .env
+
 ```bash
 # install dependencies
 $ npm install

@@ -17,13 +17,7 @@
       </v-list-item>
       <v-divider></v-divider>
       <v-list>
-        <!--
-        <v-list-item to="/service">
-          <v-list-item-content>
-            <v-list-item-title>Service</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        -->
+        
         <v-list-item to="/member">
           <v-list-item-content>
             <v-list-item-title>Members</v-list-item-title>

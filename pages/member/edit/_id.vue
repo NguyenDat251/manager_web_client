@@ -59,14 +59,6 @@ export default {
       projects: [],
       modal: false,
       valid: true,
-      //   username: "",
-      //   password: "",
-      //   lastname: "",
-      //   firstname: "",
-      //   telephone: "",
-      //   role_id: null,
-      //   roles: [],
-      //   description: "",
       is_loading: false,
       rules: {
         //required: false
@@ -75,8 +67,6 @@ export default {
           const pattern = /(09|01[2|6|8|9]|03)+([0-9]{8})\b/g;
           return pattern.test(value) || "That's not a phone number";
         }
-        // name: [val => (val || "").length > 0 || "This field is required"],
-        // role: [val => val != null || "This field is required"]
       }
     };
   },
@@ -122,13 +112,10 @@ export default {
           projectId: this.projectId
         })
         .then(res => {
-        //   console.log("Response");
-        //   console.log(res);
           this.$router.go(-1);
           this.is_loading = false;
         })
         .catch(function(error) {
-          //handle error
           console.log("Error edit member: ");
           console.log(error);
           $this.is_loading = false;
@@ -138,7 +125,6 @@ export default {
   mounted: async function() {
     this.id = this.$route.params.id
     await this.getMember(this.id)
-    //console.log()
   }
   
 };

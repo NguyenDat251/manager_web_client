@@ -23,13 +23,11 @@
               :items-per-page="itemsPerPage"
               @page-count="pageCount = $event"
             >
-              <!-- <template slot="headers" slot-scope="{ header }"> -->
               <template v-slot:header="{ props: { headers } }">
                 <thead>
                   <span class="subheading font-weight-light text--darken-3" v-text="headers.text" />
                 </thead>
               </template>
-              <!-- <template slot="items" slot-scope="{ item }"> -->
               <template v-slot:body="{ items }">
                 <tbody>
                   <tr v-for="item in items" :key="item.id">
@@ -87,7 +85,6 @@
 <script>
 export default {
   data: () => ({
-    //modal: false,
     page: 1,
     pageCount: 0,
     itemsPerPage: 5,
@@ -129,8 +126,6 @@ export default {
       await $this.$axios
         .get("/project")
         .then(async function(response) {
-          //if(response.data.returnCode == 1){
-          // console.log("this members: " +  JSON.stringify(response.data.data))
           await ($this.items = response.data);
 
           $this.items.forEach(Element => {
@@ -169,8 +164,6 @@ export default {
       await $this.$axios
         .get("/project/members/" + item.id)
         .then(async function(response) {
-          //if(response.data.returnCode == 1){
-          // console.log("this members: " +  JSON.stringify(response.data.data))
           await ($this.members = response.data);
           console.log(
             "this members of project: " + JSON.stringify($this.members)
@@ -184,7 +177,6 @@ export default {
   },
   created: async function() {
     this.getListProjects();
-    //console.log()
   }
 };
 </script>

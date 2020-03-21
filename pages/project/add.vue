@@ -36,14 +36,6 @@ export default {
         description: '',
         modal: false,
       valid: true,
-    //   username: "",
-    //   password: "",
-    //   lastname: "",
-    //   firstname: "",
-    //   telephone: "",
-    //   role_id: null,
-    //   roles: [],
-    //   description: "",
       is_loading: false,
       rules: {
         required: val => !!val ||  "This field is required"
@@ -54,7 +46,6 @@ export default {
     addProject: function(e) {
       let $this = this;
       this.is_loading = true;
-      //console.log(this.date)
       this.$axios
         .post('/project', {
           name: this.name,

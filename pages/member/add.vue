@@ -78,24 +78,13 @@ export default {
         projects: [],
         modal: false,
       valid: true,
-    //   username: "",
-    //   password: "",
-    //   lastname: "",
-    //   firstname: "",
-    //   telephone: "",
-    //   role_id: null,
-    //   roles: [],
-    //   description: "",
       is_loading: false,
       rules: {
-          //required: false
         required: val => !!val ||  "This field is required",
         phone: value => {
                     const pattern = /(09|01[2|6|8|9]|03)+([0-9]{8})\b/g;
                     return pattern.test(value) || "That's not a phone number";
                     },
-        // name: [val => (val || "").length > 0 || "This field is required"],
-        // role: [val => val != null || "This field is required"]
       }
     };
   },
@@ -103,7 +92,6 @@ export default {
     addMember: function(e) {
       let $this = this;
       this.is_loading = true;
-      //console.log(this.date)
       this.$axios
         .post('/member', {
           name: this.name,

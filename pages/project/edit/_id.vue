@@ -36,14 +36,6 @@ export default {
         description: '',
         modal: false,
       valid: true,
-    //   username: "",
-    //   password: "",
-    //   lastname: "",
-    //   firstname: "",
-    //   telephone: "",
-    //   role_id: null,
-    //   roles: [],
-    //   description: "",
       is_loading: false,
       rules: {
         required: val => !!val ||  "This field is required"
@@ -52,7 +44,6 @@ export default {
   },
   methods: {
     getProject: function(id) {
-       // console.log("get member")
       this.$axios
         .get("/project/" + id
         )
@@ -79,8 +70,6 @@ export default {
           description: this.description
         })
         .then(res => {
-        //   console.log("Response");
-        //   console.log(res);
           this.$router.go(-1);
           this.is_loading = false;
         })

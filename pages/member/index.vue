@@ -23,13 +23,11 @@
               :items-per-page="itemsPerPage"
               @page-count="pageCount = $event"
             >
-              <!-- <template slot="headers" slot-scope="{ header }"> -->
               <template v-slot:header="{ props: { headers } }">
                 <thead>
                   <span class="subheading font-weight-light text--darken-3" v-text="headers.text" />
                 </thead>
               </template>
-              <!-- <template slot="items" slot-scope="{ item }"> -->
               <template v-slot:body="{ items }">
                 <tbody>
                   <tr v-for="item in items" :key="item.id">
@@ -37,7 +35,6 @@
                     <td>{{ item.phone }}</td>
                     <td>{{ item.birthdate }}</td>
                     <td>{{ item.ProjectName }}</td>
-                    <!-- <td class="text-xs-right">{{ item.role }}</td> -->
                     <td class="text-xs-right">
                       <v-tooltip right v-on="on">
                         <template v-slot:activator="{ on }">
@@ -108,18 +105,11 @@ export default {
       await $this.$axios
         .get("/member")
         .then(async function(response) {
-          //if(response.data.returnCode == 1){
-          // console.log("this members: " +  JSON.stringify(response.data.data))
           await ($this.items = response.data);
           $this.items.forEach(element => {
             element.birthdate = element.birthdate.substring(0, 10);
           });
           console.log("this members: " + JSON.stringify($this.items));
-
-          // }
-          // else{
-          //   console.log("this error message: " +  response.data.returnMessage)
-          // }
         })
         .catch(function(error) {
           console.log("Error get list member:");
@@ -148,7 +138,6 @@ export default {
   },
   created: async function() {
     this.getListMembers();
-    //console.log()
   }
 };
 </script>
