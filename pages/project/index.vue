@@ -104,8 +104,8 @@ export default {
           console.log(error);
         });
     },
-    edit(member) {
-      this.$router.push({ path: "/project/edit/" + member.id });
+    edit(project) {
+      this.$router.push({ path: "/project/edit/" + project.id });
     },
     deleteMember(project) {
       let $this = this;
