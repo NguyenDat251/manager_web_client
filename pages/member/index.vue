@@ -39,11 +39,13 @@
                     <td>{{ item.ProjectName }}</td>
                     <!-- <td class="text-xs-right">{{ item.role }}</td> -->
                     <td class="text-xs-right">
+
+                      <v-icon color="tertiary" @click="edit(item)">edit</v-icon>
                       <!-- <v-btn color="success" @click="dialog=true">Chỉnh sửa</v-btn> -->
-                      <v-dialog v-model="item.dialog" width="700">
+                      <!-- <v-dialog v-model="item.dialog" width="700">
                         <template v-slot:activator="{ on }">
-                          <!-- <v-btn color="success" v-on="on">Chỉnh sửa</v-btn> -->
-                          <v-icon color="tertiary" v-on="on">edit</v-icon>
+                           <v-btn color="success" v-on="on">Chỉnh sửa</v-btn>
+                          
                         </template>
                         <edit-form
                           title="Chỉnh sửa thông tin member"
@@ -53,13 +55,13 @@
                           btn="Cập nhập"
                           @OnClickEdit="updateProfile($event, item)"
                         ></edit-form>
-                      </v-dialog>
+                      </v-dialog> -->
                     </td>
                     <td>
                       <v-icon
                         color="tertiary"
-                        @click="item.status=!item.status"
-                      >{{item.status ? 'lock' : 'lock_open'}}</v-icon>
+                        @click="deleteMember(item)"
+                      >mdi-account-remove</v-icon>
                     </td>
                   </tr>
                 </tbody>
@@ -129,6 +131,25 @@ export default {
         })
         .catch(function(error) {
           console.log("Error get list member:");
+          console.log(error);
+        });
+    },
+    edit(member){
+      this.$router.push({path: "/member/edit/" + member.id})
+    },
+    deleteMember(member){
+       let $this= this;
+      this.$axios.delete("/member/" + member.id)
+        .then(async function(response) {
+         
+          console.log(response.data)
+          console.log($this.items)
+          const index = $this.items.indexOf(member);
+          console.log("index delete item: " + index);
+          $this.items.splice(index, 1);
+        })
+        .catch(function(error) {
+          console.log("Error delete member:");
           console.log(error);
         });
     }
