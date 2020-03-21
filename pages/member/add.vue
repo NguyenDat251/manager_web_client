@@ -10,39 +10,57 @@
           outlined
           label="Name"
           v-model="name"
-          :rules="rules.name"
-          :required="true"
+          :rules="[rules.required]"
           dense
         ></v-text-field>
 
         <v-text-field
           outlined
           label="Phone"
-          v-model="name"
-          :rules="rules.name"
-          :required="true"
+          v-model="phone"
+          :rules="[rules.required, rules.phone]"
           dense
         ></v-text-field>
 
         
+        <v-dialog
+          ref="dialog"
+          v-model="modal"
+          :return-value.sync="date"
+          persistent
+          width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="date"
+              label="Birthdate"
+              prepend-icon="event"
+              readonly
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="date" scrollable>
+            <v-spacer></v-spacer>
+            <v-btn text color="primary" @click="modal = false">Cancel</v-btn>
+            <v-btn text color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+          </v-date-picker>
+        </v-dialog>
+     
 
         <v-select
-          :items="roles"
-          item-text="display_name"
+          :items="projects"
+          item-text="name"
           item-value="id"
-          label="Roles"
-          v-model="role_id"
-          :rules="rules.role"
-          :required="true"
+          label="Projects"
+          v-model="projectId"
         ></v-select>
-        <v-textarea label="Description" outlined v-model="description"></v-textarea>
 
         <v-btn
           color="primary"
           class="mr-4"
           :loading="is_loading"
           :disabled="!valid"
-          @click="addUser"
+          @click="addMember"
         >Submit</v-btn>
       </v-form>
     </v-container>
@@ -53,35 +71,45 @@
 export default {
   data() {
     return {
+        date: new Date().toISOString().substr(0, 10),
+        name: '',
+        phone: '',
+        projectId: null,
+        projects: [],
+        modal: false,
       valid: true,
-      username: "",
-      password: "",
-      lastname: "",
-      firstname: "",
-      telephone: "",
-      role_id: null,
-      roles: [],
-      description: "",
+    //   username: "",
+    //   password: "",
+    //   lastname: "",
+    //   firstname: "",
+    //   telephone: "",
+    //   role_id: null,
+    //   roles: [],
+    //   description: "",
       is_loading: false,
       rules: {
-        name: [val => (val || "").length > 0 || "This field is required"],
-        role: [val => val != null || "This field is required"]
+          //required: false
+        required: val => !!val ||  "This field is required",
+        phone: value => {
+                    const pattern = /(09|01[2|6|8|9]|03)+([0-9]{8})\b/g;
+                    return pattern.test(value) || "That's not a phone number";
+                    },
+        // name: [val => (val || "").length > 0 || "This field is required"],
+        // role: [val => val != null || "This field is required"]
       }
     };
   },
   methods: {
-    addUser: function(e) {
+    addMember: function(e) {
       let $this = this;
       this.is_loading = true;
+      //console.log(this.date)
       this.$axios
-        .post(this.$api("api.routes.user.create"), {
-          username: this.username,
-          password: this.password,
-          lastname: this.lastname,
-          firstname: this.firstname,
-          telephone: this.telephone,
-          role_id: this.role_id,
-          description: this.description
+        .post('/member', {
+          name: this.name,
+          phone: this.phone,
+          birthdate: this.date,
+          projectId: this.projectId
         })
         .then(res => {
           console.log("Response");
@@ -102,9 +130,9 @@ export default {
   mounted: function() {
     let $this = this;
     this.$axios
-      .get(this.$api("api.routes.user_role.roles.list"))
+      .get('/project')
       .then(response => {
-        $this.roles = response.data.roles;
+        $this.projects = response.data;
       })
       .catch(function(error) {
         //handle error
