@@ -2,7 +2,7 @@
   <v-container fill-height fluid grid-list-xl>
     <v-layout justify-center wrap>
       <v-flex md12>
-        <v-btn color="blue white--text" to="member/add">Add a member</v-btn>
+        <v-btn color="blue white--text" to="member/add">Add a members</v-btn>
         <v-card text flat>
           <v-card-title>
             <v-text-field
